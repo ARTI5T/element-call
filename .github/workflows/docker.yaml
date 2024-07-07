@@ -9,7 +9,12 @@ on:
         required: false
         type: string
         default: ${{ github.run_id }}
-
+      username:
+        required: true
+        type: string
+      password:
+        required: true
+        type: string
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
@@ -37,8 +42,8 @@ jobs:
         uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          username: ${{ inputs.username }}
+          password: ${{ inputs.password }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
