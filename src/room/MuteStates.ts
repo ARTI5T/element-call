@@ -72,7 +72,7 @@ export function useMuteStates(): MuteStates {
   const devices = useMediaDevices();
 
   const audio = useMuteState(devices.audioInput, () => true);
-  const video = useMuteState(devices.videoInput, () => true);
+  const video = useMuteState(devices.videoInput, () => false);
 
   return useMemo(() => ({ audio, video }), [audio, video]);
 }
