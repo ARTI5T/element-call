@@ -12,7 +12,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: ARTI5T/${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build_and_deploy:
