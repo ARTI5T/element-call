@@ -13,6 +13,8 @@ on:
     paths-ignore:
       - ".github/**"
       - "docs/**"
+  workflow_dispatch:
+  
 jobs:
   build_element_call:
     uses: ./.github/workflows/element-call.yaml
