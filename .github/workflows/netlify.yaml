@@ -46,7 +46,7 @@ jobs:
             Exercise caution. Use test accounts.
 
       - name: 📥 Download artifact
-        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           github-token: ${{ secrets.ELEMENT_BOT_TOKEN }}
           run-id: ${{ inputs.artifact_run_id }}
@@ -58,7 +58,7 @@ jobs:
         run: curl -s https://raw.githubusercontent.com/element-hq/element-call/main/config/netlify_redirects > webapp/_redirects
 
       - name: Add config file
-        run: curl -s "https://raw.githubusercontent.com/${{ inputs.pr_head_full_name }}/${{ inputs.pr_head_ref }}/config/element_io_preview.json" > webapp/config.json
+        run: curl -s "https://raw.githubusercontent.com/${{ inputs.pr_head_full_name }}/${{ inputs.pr_head_ref }}/config/config_netlify_preview.json" > webapp/config.json
 
       - name: ☁️ Deploy to Netlify
         id: netlify

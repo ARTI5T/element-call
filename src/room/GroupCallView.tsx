@@ -80,17 +80,12 @@ export const GroupCallView: FC<Props> = ({
   const memberships = useMatrixRTCSessionMemberships(rtcSession);
   const isJoined = useMatrixRTCSessionJoinState(rtcSession);
 
-  // The mute state reactively gets updated once the participant count reaches the threshold.
-  // The user then still is able to unmute again.
-  // The more common case is that the user is muted from the start (participant count is already over the threshold).
-  const autoMuteHappened = useRef(false);
+  // This should use `useEffectEvent` (only available in experimental versions)
   useEffect(() => {
-    if (autoMuteHappened.current) return;
-    if (memberships.length >= MUTE_PARTICIPANT_COUNT) {
+    if (memberships.length >= MUTE_PARTICIPANT_COUNT)
       muteStates.audio.setEnabled?.(false);
-      autoMuteHappened.current = true;
-    }
-  }, [autoMuteHappened, memberships, muteStates.audio]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     window.rtcSession = rtcSession;
@@ -195,7 +190,7 @@ export const GroupCallView: FC<Props> = ({
       const onJoin = async (
         ev: CustomEvent<IWidgetApiRequest>,
       ): Promise<void> => {
-        defaultDeviceSetup(ev.detail.data as unknown as JoinCallData);
+        await defaultDeviceSetup(ev.detail.data as unknown as JoinCallData);
         await enterRTCSession(rtcSession, perParticipantE2EE);
         await widget!.api.transport.reply(ev.detail, {});
       };
@@ -204,9 +199,12 @@ export const GroupCallView: FC<Props> = ({
         widget!.lazyActions.off(ElementWidgetActions.JoinCall, onJoin);
       };
     } else if (widget && !preload && skipLobby) {
-      // No lobby and no preload: we enter the rtc session right away
-      defaultDeviceSetup({ audioInput: null, videoInput: null });
-      enterRTCSession(rtcSession, perParticipantE2EE);
+      const join = async (): Promise<void> => {
+        await defaultDeviceSetup({ audioInput: null, videoInput: null });
+        await enterRTCSession(rtcSession, perParticipantE2EE);
+      };
+      // No lobby and no preload: we enter the RTC Session right away.
+      join();
     }
   }, [rtcSession, preload, skipLobby, perParticipantE2EE]);
 
